@@ -8,12 +8,20 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(BootstrapVue)
 
-new Vue({
+const app = new Vue({
   router,
   store,
   components: {App},
   render(h) {
     return h(App)
   }
-}).$mount("#root")
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+  const mountPoint = document.getElementById('root')
+  if (mountPoint) {
+    app.$mount(mountPoint)
+  }
+})
+
 
