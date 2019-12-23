@@ -1,10 +1,21 @@
 <template>
     <div class="main">
-            <b-alert class="noShikoAlert" :show="!isVoiceActorLoading" variant="danger">リストの取得にに失敗しました</b-alert>
+            <b-alert class="noShikoAlert" :show="isVoiceActorLoading" variant="danger">リストの取得にに失敗しました</b-alert>
             <b-alert class="noShikoAlert" :show="isNotSelected" variant="danger">まだアイマス声優でシコってないようですね、早くシコってこのリストを埋め尽くそう！</b-alert>
             <VoiceActorList class="voiceActorList"/>
-            <b-button class="saveBut" v-if="!isNotSelected" type="submit" variant="primary" @click="shikoListCreate">保存する</b-button>
-            <b-alert :show="isCreated">保存に成功しました{{usrToken}}</b-alert>
+            <b-button class="saveBut" v-if="!isNotSelected" type="submit" variant="primary" @click="shikoListCreate" :disabled="buttonDisable">保存する</b-button>
+        <div class="success" :show="isCreated">
+            <b-alert :show="isCreated">
+                シコチェックリストの保存に成功しました<br>
+                下記のリンクがあなたのシコチェックリストです<br>
+                どこかにメモしておきましょう
+            </b-alert>
+            <b-alert :show="isUpdate">
+                シコチェックリストの更新に成功しました
+            </b-alert>
+            <a class="url" :href="url" target="_blank">{{url}}</a>
+        </div>
+        <b-alert :show="saveFailed">シコチェックリストの保存に失敗しました</b-alert>
     </div>
 </template>
 <script lang="ts">
@@ -15,31 +26,27 @@
   const MainVue = Vue.extend({
     data() {
       return {
-        usrToken: '',
-        isShikoList: true,
+        url: '',
         isLoading: true,
         isLoadingFailed: false,
-        isFetching: false,
-        isCreate: false
+        isCreate: false,
+        isUpdate: false,
+        saveFailed: false,
+        buttonDisable: false
       }
     },
     created() {
       try {
 
         if (ImasShikoCheckListVuexModule.imasVoiceActors.length === 0 && this.$route.query.token === undefined) {
-
-          this.isShikoList = !this.isShikoList
           ImasShikoCheckListVuexModule.getVoiceActors()
           this.isLoading = false
-
         } else {
-
           const usrToken: any = this.$route.query.token
-          this.$data.usrToken = usrToken
+          this.$data.url = `https://imasshikochecklist.firebaseapp.com/?token=${usrToken}`
           ImasShikoCheckListVuexModule.getVoiceActorAndShikoList(usrToken)
           this.isLoading = false
         }
-        this.isFetching = true
 
       } catch {
         this.isLoadingFailed = true
@@ -53,25 +60,38 @@
         return ImasShikoCheckListVuexModule.shikoCheckList.length === 0
       },
       isVoiceActorLoading() {
-        return this.$data.isFetching
+        return this.$data.isLoadingFailed
       },
       isCreated() {
         return this.$data.isCreate
       }
-
     },
     methods: {
-      shikoListCreate() {
-        if (this.$data.usrToken === '') {
-          const json = JSON.stringify(ImasShikoCheckListVuexModule.shikoCheckList)
-          ImasShikoCheckListVuexModule.createVoiceActorShikoList(json)
-          this.$data.usrToken = ImasShikoCheckListVuexModule.usrToken
-          this.$data.isCreate = true
+      async shikoListCreate() {
+        console.log('onclick')
+        this.$data.buttonDisable = true
+        const json = JSON.stringify(ImasShikoCheckListVuexModule.shikoCheckList)
+        if (this.$data.url === '') {
+          await ImasShikoCheckListVuexModule.createVoiceActorShikoList(json)
+
+          if (ImasShikoCheckListVuexModule.isUpdate) {
+            this.$data.url = `https://imasshikochecklist.firebaseapp.com/?token=${ImasShikoCheckListVuexModule.usrToken}`
+            this.$data.isCreate = true
+          } else {
+            this.$data.saveFailed = true
+          }
+
         } else {
-          ImasShikoCheckListVuexModule.updateVoiceActorShikoList(this.$data.usrToken)
+          await ImasShikoCheckListVuexModule.updateVoiceActorShikoList(this.$route.query.token, json)
+          if (ImasShikoCheckListVuexModule.isUpdate) {
+            this.$data.isUpdate = true
+          } else {
+            this.$data.saveFailed = true
+          }
         }
       }
     }
+
 
   })
   export default MainVue
@@ -91,5 +111,9 @@
 
     .saveBut {
         margin: 20px
+    }
+    .success {
+        font-size: 20px;
+        margin: 20px;
     }
 </style>

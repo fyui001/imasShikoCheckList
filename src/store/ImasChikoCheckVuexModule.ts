@@ -10,6 +10,7 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
   imasVoiceActors: VoiceActtorName[] = []
   shikoCheckList: string[] = []
   isFetching = false
+  isUpdate = true
   usrToken = ''
 
   @Mutation
@@ -27,6 +28,11 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
     this.usrToken = param
   }
 
+  @Mutation
+  public updateShikoListFailed() {
+
+  }
+
   @Action({})
   public getVoiceActors() {
     axios({
@@ -34,7 +40,7 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
       url: 'https://app.mogamin.net/api/shiko/get'
     }).then((result: any) => {
 
-        this.setVoiceActors(result.data.voiceActors)
+      this.setVoiceActors(result.data.voiceActors)
 
     }).catch(() => {
 
@@ -62,8 +68,8 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
   }
 
   @Action({})
-  public createVoiceActorShikoList(shikoCheckList: string): void {
-    axios({
+  public async createVoiceActorShikoList(shikoCheckList: string) {
+    await axios({
       method: 'POST',
       url: 'https://app.mogamin.net/api/shiko/create',
       params: {
@@ -71,28 +77,32 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
       }
     }).then((result: any) => {
       const responce = result.data
-
       if (responce.status) {
-        this.setUrlToken(responce.urlToken)
+        this.setUrlToken(responce.usrToken)
+      } else {
+        this.updateShikoListFailed()
       }
 
+    }).catch(() => {
+      this.updateShikoListFailed()
     })
   }
 
   @Action({})
-  public updateVoiceActorShikoList(usrToken: string) {
-    const json = JSON.stringify(ImasShikoCheckListVuexModule.shikoCheckList)
-    axios({
-      method:'POST',
+  public async updateVoiceActorShikoList(usrToken: any, shikoCheckList: string) {
+    await axios({
+      method: 'POST',
       url: 'https://app.mogamin.net/api/shiko/update',
       params: {
-        'shikoList': json,
+        'shikoList': shikoCheckList,
         'usrToken': usrToken
       }
     }).then((result) => {
-
+      if (result.data.status) {
+        this.updateShikoListFailed()
+      }
     }).catch(() => {
-
+      this.updateShikoListFailed()
     })
   }
 
