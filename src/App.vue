@@ -8,6 +8,9 @@
             <b-collapse is-nav id="main-navigation">
                 <b-navbar-nav>
                     <b-nav-item to="/about">About</b-nav-item>
+                    <b-nav-item href="https://github.com/fyui001/imasShikoCheckList" target="_blank">
+                        GitHub
+                    </b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
