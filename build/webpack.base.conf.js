@@ -14,7 +14,6 @@ rm.sync(resolve('prod'))
 rm.sync(resolve('dist'))
 
 module.exports = {
-  mode: 'development',
   output: {
     path: resolve('dist'),
     publicPath: '/'
@@ -49,7 +48,6 @@ module.exports = {
             loader: 'ts-loader',
             options: {
               appendTsSuffixTo: [/\.vue$/],
-              transpileOnly: true,
               happyPackMode: true
             }
           }
