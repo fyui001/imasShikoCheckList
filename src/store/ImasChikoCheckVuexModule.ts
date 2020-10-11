@@ -1,15 +1,16 @@
-import {Mutation, Action, VuexModule, getModule, Module} from "vuex-module-decorators"
-import store from './store'
+import { Mutation, Action, VuexModule, getModule, Module } from 'vuex-module-decorators'
+import { Store } from 'vuex'
+import { MainStore } from './store'
 import VoiceActtorName from '../modules/VoiceActorName'
 import axios from 'axios'
+import { API_BASE_URL } from '../config/getenv'
 
 
-@Module({dynamic: true, store, name: 'ShikoCheckList-Store'})
-export class ImasShikoCheckVuexModuleClass extends VuexModule {
+@Module({name: 'ImasShikoCheckListStore', namespaced: true, stateFactory: true })
+export class ImasShikoCheckModuleClass extends VuexModule {
 
   imasVoiceActors: VoiceActtorName[] = []
   shikoCheckList: string[] = []
-  isFetching = false
   isUpdate = true
   usrToken = ''
 
@@ -37,7 +38,7 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
   public getVoiceActors() {
     axios({
       method: 'GET',
-      url: 'https://app.mogamin.net/api/shiko/get'
+      url: `${API_BASE_URL}/api/shiko/get`
     }).then((result: any) => {
 
       this.setVoiceActors(result.data.voiceActors)
@@ -51,7 +52,7 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
   public getVoiceActorAndShikoList(usrToken: string) {
     axios({
       method: 'GET',
-      url: 'https://app.mogamin.net/api/shiko/get',
+      url: `${API_BASE_URL}/api/shiko/get`,
       params: {
         usrToken
       }
@@ -71,7 +72,7 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
   public async createVoiceActorShikoList(shikoCheckList: string) {
     await axios({
       method: 'POST',
-      url: 'https://app.mogamin.net/api/shiko/create',
+      url: `${API_BASE_URL}/api/shiko/create`,
       params: {
         'shikoList': shikoCheckList
       }
@@ -92,7 +93,7 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
   public async updateVoiceActorShikoList(usrToken: any, shikoCheckList: string) {
     await axios({
       method: 'POST',
-      url: 'https://app.mogamin.net/api/shiko/update',
+      url: `${API_BASE_URL}/api/shiko/update`,
       params: {
         'shikoList': shikoCheckList,
         'usrToken': usrToken
@@ -108,5 +109,11 @@ export class ImasShikoCheckVuexModuleClass extends VuexModule {
 
 }
 
-const ImasShikoCheckListVuexModule = getModule(ImasShikoCheckVuexModuleClass)
+const ImasShikoCheckListVuexModule = (store?: Store<MainStore>) => getModule(ImasShikoCheckModuleClass, store)
 export default ImasShikoCheckListVuexModule
+
+export function registerImasShikoCheckListModule(store: Store<MainStore>) {
+  if (!store.state.imasShikoCheckStore) {
+    store.registerModule('ImasShikoCheckListStore', ImasShikoCheckModuleClass)
+  }
+}
