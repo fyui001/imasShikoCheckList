@@ -9,15 +9,14 @@ module.exports = {
   },
   env: {
     browser: true,
-    jest: true
+    jest: true,
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/base',
     'plugin:vue/strongly-recommended',
-    'standard',
     'prettier',
-    'prettier/vue'
+    'prettier/vue',
   ],
   // required to lint *.vue files
   plugins: ['@typescript-eslint', 'vue'],
@@ -34,6 +33,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }]
+    '@typescript-eslint/no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
+    '@typescript-eslint/member-delimiter-style': 'off'
   }
 }

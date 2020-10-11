@@ -1,23 +1,23 @@
-.DS_Store
+.env
 node_modules
+yarn-error.log
 /dist
 /prod
 
-# local env files
-.env.local
-.env.*.local
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
+# IDE and editor specific files #
+/nbproject
 .idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.firebase
+Session.vim
+*.swp
+*~
+.vs
+
+# OS generated files #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
