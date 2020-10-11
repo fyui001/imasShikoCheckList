@@ -5,9 +5,14 @@ const rm = require('rimraf')
 const utils = require('./utils')
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 const resolve = (dir) => {
   return path.join(__dirname, '..', dir)
 }
+
+const dotenv = require('dotenv')
+const env = dotenv.config().parsed;
+const webpack = require('webpack')
 
 /* delete files */
 rm.sync(resolve('prod'))
@@ -17,6 +22,9 @@ module.exports = {
   output: {
     path: resolve('dist'),
     publicPath: '/'
+  },
+  node: {
+    setImmediate: false,
   },
   entry: {
     app: './src/main.ts'
@@ -96,6 +104,9 @@ module.exports = {
       template: './public/index.html',
       inject: true
     }),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(env)
+    })
   ]
 }
