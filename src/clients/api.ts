@@ -6,8 +6,8 @@ export interface FetchVoiceActorsResponse {
   voiceActors: {
     id: number
     name: string
-  }
-  shiko_list?: string[]
+  }[]
+  shikoList?: object[]
 }
 
 export interface SendVoiceActorMasturbationList {
@@ -39,7 +39,7 @@ export default class ApiRequest {
       method: 'GET',
       url: `${API_BASE_URL}/api/shiko/get`,
       params: {
-        urlToken: token
+        usrToken: token
       }
     })
     return result.data
