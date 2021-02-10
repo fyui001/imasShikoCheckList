@@ -24,7 +24,8 @@ module.exports = merge(baseConfig, {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader'
+          'css-loader',
+          'postcss-loader',
         ]
       },
       {
@@ -47,9 +48,4 @@ module.exports = merge(baseConfig, {
       }
     ]
   },
-
-  optimization: {
-    namedModules: true,
-    noEmitOnErrors: true
-  }
 })
