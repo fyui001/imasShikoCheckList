@@ -3,14 +3,11 @@
 const path = require('path')
 const baseConfig = require('./webpack.base.conf')
 const { merge } = require('webpack-merge')
-const resolve = (dir) => {
-  return path.join(__dirname, '..', dir)
-}
 
 module.exports = merge(baseConfig, {
   mode: 'production',
   output: {
-    path: resolve('prod')
+    path: path.resolve(__dirname, '..', 'prod')
   },
   module: {
     rules: [
@@ -19,6 +16,7 @@ module.exports = merge(baseConfig, {
         use: [
           'style-loader',
           'css-loader',
+          'postcss-loader',
         ]
       },
       {

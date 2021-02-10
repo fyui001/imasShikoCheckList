@@ -6,26 +6,20 @@ const utils = require('./utils')
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
-const resolve = (dir) => {
-  return path.join(__dirname, '..', dir)
-}
 
 const dotenv = require('dotenv')
 const env = dotenv.config().parsed;
 const webpack = require('webpack')
 
 /* delete files */
-rm.sync(resolve('prod'))
-rm.sync(resolve('dist'))
+rm.sync(path.join(__dirname, '..', 'prod'))
+rm.sync(path.join(__dirname, '..', 'dist'))
 
 module.exports = {
-  output: {
-    path: resolve('dist'),
+  /*output: {
+    path: path.resolve('dist'),
     publicPath: '/'
-  },
-  node: {
-    setImmediate: false,
-  },
+},*/
   entry: {
     app: './src/main.ts'
   },
@@ -33,7 +27,7 @@ module.exports = {
     extensions: ['.js', '.ts', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
-      '@': resolve('src')
+      '@': path.resolve('src')
     }
   },
 
